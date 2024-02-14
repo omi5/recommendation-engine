@@ -7,4 +7,5 @@ export interface IIngredient {
     costPerUnit: number;
     caloriesPerUnit: number;
     _id: string;
+    
   }
