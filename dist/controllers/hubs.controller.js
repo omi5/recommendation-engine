@@ -12,9 +12,53 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAllHubsNearbyCustomer = void 0;
 const getAllHubsNearbyCustomer = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const hubObject = Object.assign({}, req.body); //customer data
-        res.status(200).send(hubObject);
-        console.log(hubObject);
+        const hubObject = req.body; //customer data
+        console.log('Hub Object is: ', hubObject);
+        const hubsArray = [];
+        const luArray = [];
+        const MuArray = [];
+        const HuArray = [];
+        //insert all LU hubs
+        hubObject.forEach((hub) => {
+            if (hub.status === 'LU') {
+                hubsArray.push(hub);
+            }
+        });
+        //insert all MU hubs, as no LU hubs present
+        if (hubsArray.length === 0) {
+            hubObject.forEach((hub) => {
+                if (hub.status === 'MU') {
+                    hubsArray.push(hub);
+                }
+            });
+        }
+        //insert all HU hubs, as no LU or MU hubs present
+        if (hubsArray.length === 0) {
+            hubObject.forEach((hub) => {
+                hubsArray.push(hub);
+            });
+        }
+        //Add all restaurants to a single array, and sort it by LU, MU, HU
+        hubsArray.forEach((hub) => {
+            hub.restaurants.forEach((el) => {
+                if (el.utilizationType === 'LU') {
+                    luArray.unshift(el);
+                }
+                else if (el.utilizationType === 'MU') {
+                    MuArray.push(el);
+                }
+                else {
+                    HuArray.push(el);
+                }
+            });
+        });
+        // console.log('LU Array is: ', sortedRestaurantByUtilizationType);
+        // console.log('MU Array is: ', MuArray);
+        // console.log('HU Array is: ', HuArray);
+        const sortedRestaurantByUtilizationType = luArray.concat(MuArray, HuArray);
+        // console.log('Sorted restarants: ',sortedRestaurantByUtilizationType);
+        res.status(200).send(sortedRestaurantByUtilizationType);
+        // const sortHubs = await sortByHubIncludeLu(hubObject);
     }
     catch (error) {
         console.log(error);

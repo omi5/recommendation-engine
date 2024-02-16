@@ -21,5 +21,5 @@ app.use('', hubs_router_1.default);
 //    res.send({...customerData})
 // })
 app.listen(port, () => {
-    console.log(`sever is running ${port}`);
+    console.log(`server is running ${port}`);
 });

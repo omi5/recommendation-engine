@@ -11,7 +11,7 @@ export interface ICustomer {
     phoneNumber: string;
     password: string;
     address: string;
-    currentLatLong?: ILongLat;
+    currentLatLong: ILongLat;
     doorwayLatLong?: ILongLat;
     uprn?: string;
     allOrderIdList: string[];

@@ -1,0 +1,38 @@
+[
+    {
+        "restaurantId": 1,
+        "rating": 75
+    },
+    {
+        "restaurantId": 3,
+        "rating": 55
+    },
+    {
+        "restaurantId": 4,
+        "rating": 85
+    },
+    {
+        "restaurantId": 5,
+        "rating": 65
+    },
+    {
+        "restaurantId": 6,
+        "rating": 92
+    },
+    {
+        "restaurantId": 7,
+        "rating": 70
+    },
+    {
+        "restaurantId": 8,
+        "rating": 40
+    },
+    {
+        "restaurantId": 9,
+        "rating": 98
+    },
+    {
+        "restaurantId": 10,
+        "rating": 71
+    }
+]

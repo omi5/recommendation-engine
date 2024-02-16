@@ -22,6 +22,6 @@ app.use('',hubsRoute)
 // })
 
 app.listen(port, ()=>{
-    console.log(`sever is running ${port}`);
+    console.log(`server is running ${port}`);
     
 })
