@@ -64,9 +64,9 @@ const sortRestaurantsByPreferenceAndRatings = (restaurantsData, restaurantMenus,
     let restaurantsWithTagArr = [];
     restaurantMenus.forEach(restaurant => {
         restaurant.items.forEach(item => {
-            for (let i = 0; i < item.item.itemProfileTastyTags.length; i++) {
+            for (let i = 0; i < item.itemProfileTastyTags.length; i++) {
                 for (let j = 0; j < customerTags.length; j++) {
-                    if (item.item.itemProfileTastyTags[i] === customerTags[j]) {
+                    if (item.itemProfileTastyTags[i] === customerTags[j]) {
                         if (customerTags[j] in tagsObj)
                             tagsObj[customerTags[j]]++;
                         else
