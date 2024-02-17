@@ -22,10 +22,10 @@ const readFileAsync = (0, util_1.promisify)(fs_1.default.readFile);
 function getAllHubsByCustomerLatLong(coordinates) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            //const res = await axios.get("hub-route/" + coordinates);
             const data = yield readFileAsync(hubDataFilePath, 'utf8');
             const jsonData = JSON.parse(data);
             return jsonData;
+            // const res = await axios.get("hub-route/" + coordinates);
             // return res;
         }
         catch (error) {

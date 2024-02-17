@@ -10,11 +10,11 @@ const readFileAsync = promisify(fs.readFile);
 
 export async function getAllHubsByCustomerLatLong (coordinates: ILongLat) {
   try {
-      //const res = await axios.get("hub-route/" + coordinates);
-      const data = await readFileAsync(hubDataFilePath, 'utf8');
-      const jsonData = JSON.parse(data);
-      return jsonData;
-        // return res;
+    const data = await readFileAsync(hubDataFilePath, 'utf8');
+    const jsonData = JSON.parse(data);
+    return jsonData;
+    // const res = await axios.get("hub-route/" + coordinates);
+    // return res;
   } catch (error) {
     throw new Error("Error getting hubs from Hubs server.");
   }

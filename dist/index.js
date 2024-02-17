@@ -1,9 +1,9 @@
 "use strict";
-//for index.ts
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+//for index.ts
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const recommendation_route_1 = __importDefault(require("./routers/recommendation.route"));
@@ -17,9 +17,6 @@ app.use(express_1.default.json());
 //Routers
 app.use('', recommendation_route_1.default);
 app.use('', hubs_router_1.default);
-// app.get('',(req, res)=>{
-//    res.send({...customerData})
-// })
 app.listen(port, () => {
     console.log(`server is running ${port}`);
 });

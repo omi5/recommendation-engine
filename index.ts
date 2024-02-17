@@ -1,5 +1,4 @@
 //for index.ts
-
 import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
@@ -17,11 +16,6 @@ app.use(express.json());
 app.use('',recommendationRoute)
 app.use('',hubsRoute)
 
-// app.get('',(req, res)=>{
-//    res.send({...customerData})
-// })
-
 app.listen(port, ()=>{
-    console.log(`server is running ${port}`);
-    
+    console.log(`server is running ${port}`);    
 })

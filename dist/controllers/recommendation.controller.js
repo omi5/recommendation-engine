@@ -14,8 +14,6 @@ const external_service_1 = require("../services/external.service");
 const getRestaurantsForMarketplace = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const customerObject = Object.assign({}, req.body); //customer data
-        // console.log('Customer is: ', customerObject);
-        //ACTIVATE THIS BROTHER WHEN THE ENGINE IS READY
         const hubs = yield (0, external_service_1.getAllHubsByCustomerLatLong)(customerObject.currentLatLong);
         //get all sorted restaurants
         const restaurants = getSortedRestaurantsFromHubs(hubs);
@@ -43,6 +41,7 @@ const getRestaurantsForMarketplace = (req, res) => __awaiter(void 0, void 0, voi
             finalSortedRestaurants = sortRestaurantsByPreferenceAndRatings(restaurants, allRestaurantsMenus, allRestaurantsRatings, customerPreference);
         }
         res.status(200).send(finalSortedRestaurants);
+        // res.status(200).send(allRestaurantsMenus);
     }
     catch (error) {
         console.log(error);
@@ -50,13 +49,6 @@ const getRestaurantsForMarketplace = (req, res) => __awaiter(void 0, void 0, voi
 });
 exports.getRestaurantsForMarketplace = getRestaurantsForMarketplace;
 const sortRestaurantsByPreferenceAndRatings = (restaurantsData, restaurantMenus, restaurantRatings, customerTags) => {
-    console.log('Restaurants Data is: ', restaurantsData);
-    console.log('****************************************');
-    console.log('Restaurants Menu is: ', restaurantMenus);
-    console.log('****************************************');
-    console.log('Restaurants Ratings is: ', restaurantRatings);
-    console.log('****************************************');
-    console.log('Customer Tags is: ', customerTags);
     let LuArray = [];
     let MuArray = [];
     let HuArray = [];
@@ -68,12 +60,10 @@ const sortRestaurantsByPreferenceAndRatings = (restaurantsData, restaurantMenus,
         else
             HuArray.push(restaurant);
     });
-    //console.log("Arrays: LU", LuArray, "MU: ", MuArray, "HU: ", HuArray);
     let tagsObj = {};
     let restaurantsWithTagArr = [];
     restaurantMenus.forEach(restaurant => {
         restaurant.items.forEach(item => {
-            // if (item.item.itemProfileTastyTags.includes(customerTags[0])) //RESTART FROM HERE
             for (let i = 0; i < item.item.itemProfileTastyTags.length; i++) {
                 for (let j = 0; j < customerTags.length; j++) {
                     if (item.item.itemProfileTastyTags[i] === customerTags[j]) {
@@ -90,7 +80,6 @@ const sortRestaurantsByPreferenceAndRatings = (restaurantsData, restaurantMenus,
         tagsObj = {};
         // Sort the array based on the values in descending order
         sortedTagsArray.sort((a, b) => b[1] - a[1]);
-        console.log('Sorted Tags Array is: ', sortedTagsArray[0][0], sortedTagsArray[0][1]);
         let addFlag = true;
         // Convert the sorted array back to an object
         sortedTagsArray.forEach(([key, value]) => {
@@ -109,11 +98,8 @@ const sortRestaurantsByPreferenceAndRatings = (restaurantsData, restaurantMenus,
         console.log(`Restaurant with Tags is `, restaurantsWithTagArr);
     });
     LuArray = divideSortAndMergeArr(LuArray, restaurantsWithTagArr, customerTags, restaurantRatings);
-    console.log("LU Array is: ", LuArray);
     MuArray = divideSortAndMergeArr(MuArray, restaurantsWithTagArr, customerTags, restaurantRatings);
-    console.log("MU Array is: ", MuArray);
     HuArray = divideSortAndMergeArr(HuArray, restaurantsWithTagArr, customerTags, restaurantRatings);
-    console.log("HU Array is: ", HuArray);
     const rankedRestaurants = LuArray.concat(MuArray, HuArray);
     return rankedRestaurants;
 };
@@ -135,10 +121,6 @@ const divideSortAndMergeArr = (restaurantArr, restaurantWithTagsArr, customerTag
             }
         }
     });
-    console.log("BEFORE");
-    console.log("Tag One Arr is: ", tagOneArr);
-    console.log("Tag Two Arr is: ", tagTwoArr);
-    console.log("Tag Three Arr is: ", tagThreeArr);
     const tagMap = new Map();
     restaurantWithTagsArr.forEach(({ restaurantId, tag }) => {
         const tagValue = Object.values(tag)[0];
@@ -154,11 +136,8 @@ const divideSortAndMergeArr = (restaurantArr, restaurantWithTagsArr, customerTag
     tagOneArr = sorterHelperByRatings(tagOneArr, ratingMap);
     tagTwoArr = sorterHelperByRatings(tagTwoArr, ratingMap);
     tagThreeArr = sorterHelperByRatings(tagThreeArr, ratingMap);
+    //Merge LU, MU, HU Sorted Arrays
     restaurantArr = tagOneArr.concat(tagTwoArr, tagThreeArr);
-    console.log("AFTER");
-    console.log("Tag One Arr is: ", tagOneArr);
-    console.log("Tag Two Arr is: ", tagTwoArr);
-    console.log("Tag Three Arr is: ", tagThreeArr);
     return restaurantArr;
 };
 const sorterHelperByTags = (resArr, tagMap) => {
@@ -179,8 +158,6 @@ const sorterHelperByRatings = (resArr, ratingMap) => {
 };
 const getSortedRestaurantsFromHubs = (hubObject) => {
     try {
-        // const hubObject = req.body    //customer data
-        console.log('Hub Object is: ', hubObject);
         const hubsArray = [];
         const LuArray = [];
         const MuArray = [];

@@ -1,10 +1,16 @@
 {
-  "name": "engine",
+  "name": "Bento Recommendation Engine",
   "version": "1.0.0",
-  "description": "",
+  "description": "Express Server for Restaurants recommendation to customers",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "ts-node src/index.ts",
+    "build": "tsc",
+    "prod": "npm run build && node dist",
+    "dev": "concurrently \"npm:watch-ts\" \"npm:start-server\" ",
+    "start-server": "nodemon dist/index.js",
+    "watch-ts": "tsc -w"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +21,8 @@
     "@types/express": "^4.17.21",
     "@types/mongoose": "^5.11.97",
     "@types/node": "^20.11.17",
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.0.3",
     "typescript": "^5.3.3"
   },
   "dependencies": {

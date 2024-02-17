@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { ICustomer } from "../interfaces/customer.interface";
-import {getAllHubsByCustomerLatLong, getAllRestaurantsMenu, getAllRestaurantsRatings} from "../services/external.service"
+import { getAllHubsByCustomerLatLong, getAllRestaurantsMenu, getAllRestaurantsRatings } from "../services/external.service"
 import { IHUb } from "../interfaces/hub.interface";
 import { IUtilizationData } from "../interfaces/utilizationData.interface";
 import { IRestaurantMenu } from "../interfaces/restaurantMenu.interface";
@@ -13,10 +13,8 @@ interface RestaurantTags {
 
 export const getRestaurantsForMarketplace = async(req: Request, res: Response)=>{
     try {
-        const customerObject:ICustomer =  {...req.body}    //customer data
-        // console.log('Customer is: ', customerObject);
+        const customerObject:ICustomer = {...req.body}    //customer data
 
-        //ACTIVATE THIS BROTHER WHEN THE ENGINE IS READY
         const hubs:IHUb[] = await getAllHubsByCustomerLatLong(customerObject.currentLatLong);
 
         //get all sorted restaurants
@@ -49,6 +47,7 @@ export const getRestaurantsForMarketplace = async(req: Request, res: Response)=>
         }
 
         res.status(200).send(finalSortedRestaurants);
+        // res.status(200).send(allRestaurantsMenus);
         
     } catch (error) {
         console.log(error);
@@ -56,14 +55,7 @@ export const getRestaurantsForMarketplace = async(req: Request, res: Response)=>
 }
 
 const sortRestaurantsByPreferenceAndRatings = (restaurantsData:IUtilizationData[] ,restaurantMenus:IRestaurantMenu[], restaurantRatings: IRestaurantRating[], customerTags: string[]) => {
-   console.log('Restaurants Data is: ',restaurantsData);
-   console.log('****************************************');
-   console.log('Restaurants Menu is: ',restaurantMenus);
-   console.log('****************************************');
-   console.log('Restaurants Ratings is: ',restaurantRatings);
-   console.log('****************************************');
-   console.log('Customer Tags is: ',customerTags);
-
+    
    let LuArray:IUtilizationData[] = [];
    let MuArray:IUtilizationData[] = [];
    let HuArray:IUtilizationData[] = [];
@@ -73,13 +65,11 @@ const sortRestaurantsByPreferenceAndRatings = (restaurantsData:IUtilizationData[
     else if(restaurant.utilizationType === 'MU') MuArray.push(restaurant);
     else HuArray.push(restaurant);
    })
-    //console.log("Arrays: LU", LuArray, "MU: ", MuArray, "HU: ", HuArray);
 
    let tagsObj: { [key: string]: number } = {}
    let restaurantsWithTagArr: RestaurantTags[] = [];
    restaurantMenus.forEach(restaurant => {
     restaurant.items.forEach(item => {
-        // if (item.item.itemProfileTastyTags.includes(customerTags[0])) //RESTART FROM HERE
         for (let i = 0; i < item.item.itemProfileTastyTags.length; i++) {
             for (let j = 0; j < customerTags.length; j++) {
                 if (item.item.itemProfileTastyTags[i] === customerTags[j]) {
@@ -95,8 +85,6 @@ const sortRestaurantsByPreferenceAndRatings = (restaurantsData:IUtilizationData[
     tagsObj = {};
     // Sort the array based on the values in descending order
     sortedTagsArray.sort((a, b) => b[1] - a[1]);
-
-    console.log('Sorted Tags Array is: ', sortedTagsArray[0][0], sortedTagsArray[0][1]);
 
     let addFlag = true;
     // Convert the sorted array back to an object
@@ -117,11 +105,8 @@ const sortRestaurantsByPreferenceAndRatings = (restaurantsData:IUtilizationData[
    })
 
    LuArray = divideSortAndMergeArr(LuArray, restaurantsWithTagArr, customerTags, restaurantRatings);
-   console.log("LU Array is: ", LuArray);
    MuArray = divideSortAndMergeArr(MuArray, restaurantsWithTagArr, customerTags, restaurantRatings);
-   console.log("MU Array is: ", MuArray);
    HuArray = divideSortAndMergeArr(HuArray, restaurantsWithTagArr, customerTags, restaurantRatings);
-   console.log("HU Array is: ", HuArray);
 
    const rankedRestaurants = LuArray.concat(MuArray, HuArray);
 
@@ -148,12 +133,6 @@ const divideSortAndMergeArr = (restaurantArr:IUtilizationData[], restaurantWithT
         }
     })
 
-    console.log("BEFORE");
-    console.log("Tag One Arr is: ", tagOneArr);
-    console.log("Tag Two Arr is: ", tagTwoArr);
-    console.log("Tag Three Arr is: ", tagThreeArr);
-
-
     const tagMap = new Map();
     restaurantWithTagsArr.forEach(({ restaurantId, tag }) => {
         const tagValue = Object.values(tag)[0];
@@ -174,18 +153,14 @@ const divideSortAndMergeArr = (restaurantArr:IUtilizationData[], restaurantWithT
     tagTwoArr = sorterHelperByRatings(tagTwoArr, ratingMap);
     tagThreeArr = sorterHelperByRatings(tagThreeArr, ratingMap);
 
+    //Merge LU, MU, HU Sorted Arrays
     restaurantArr = tagOneArr.concat(tagTwoArr, tagThreeArr);
-
-    console.log("AFTER");
-    console.log("Tag One Arr is: ", tagOneArr);
-    console.log("Tag Two Arr is: ", tagTwoArr);
-    console.log("Tag Three Arr is: ", tagThreeArr);
     
     return restaurantArr;
 }
 
 
-const sorterHelperByTags = (resArr:IUtilizationData[],tagMap: any) => {
+const sorterHelperByTags = (resArr:IUtilizationData[], tagMap: any) => {
     resArr.sort((a, b) => {
         const tagValueA = tagMap.get(a.restaurantId) || 0;
         const tagValueB = tagMap.get(b.restaurantId) || 0;
@@ -194,7 +169,7 @@ const sorterHelperByTags = (resArr:IUtilizationData[],tagMap: any) => {
     return resArr;
 }
 
-const sorterHelperByRatings = (resArr:IUtilizationData[],ratingMap: any) => {
+const sorterHelperByRatings = (resArr:IUtilizationData[], ratingMap: any) => {
     resArr.sort((a, b) => {
         const ratingA = ratingMap.get(a.restaurantId) || 0;
         const ratingB = ratingMap.get(b.restaurantId) || 0;
@@ -206,9 +181,6 @@ const sorterHelperByRatings = (resArr:IUtilizationData[],ratingMap: any) => {
 
 const getSortedRestaurantsFromHubs = (hubObject: IHUb[])=>{
     try {
-        // const hubObject = req.body    //customer data
-        console.log('Hub Object is: ', hubObject);
-        
         const hubsArray:IHUb[] = [];
         const LuArray:IUtilizationData[] = [];
         const MuArray:IUtilizationData[] = [];
