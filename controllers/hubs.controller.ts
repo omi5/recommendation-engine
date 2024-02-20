@@ -1,7 +1,7 @@
 
 import { Request, Response } from "express";
 import { sortByHubIncludeLu } from "../models/hub/hub.query";
-import { IHUb } from "../interfaces/hub.interface";
+import { IHub } from "../interfaces/hub.interface";
 import { IUtilizationData } from "../interfaces/utilizationData.interface";
 
 export const getAllHubsNearbyCustomer = async(req: Request, res: Response)=>{
@@ -9,13 +9,13 @@ export const getAllHubsNearbyCustomer = async(req: Request, res: Response)=>{
         const hubObject = req.body    //customer data
         console.log('Hub Object is: ', hubObject);
         
-        const hubsArray:IHUb[] = [];
+        const hubsArray:IHub[] = [];
         const luArray:IUtilizationData[] = [];
         const MuArray:IUtilizationData[] = [];
         const HuArray:IUtilizationData[] = [];
     
         //insert all LU hubs
-        hubObject.forEach((hub:IHUb) =>{
+        hubObject.forEach((hub:IHub) =>{
             if(hub.status === 'LU'){
                 hubsArray.push(hub);
             }
@@ -23,7 +23,7 @@ export const getAllHubsNearbyCustomer = async(req: Request, res: Response)=>{
 
         //insert all MU hubs, as no LU hubs present
         if (hubsArray.length === 0) {
-            hubObject.forEach((hub:IHUb) =>{
+            hubObject.forEach((hub:IHub) =>{
                 if(hub.status === 'MU'){
                     hubsArray.push(hub);
                 }
@@ -32,13 +32,13 @@ export const getAllHubsNearbyCustomer = async(req: Request, res: Response)=>{
 
         //insert all HU hubs, as no LU or MU hubs present
         if (hubsArray.length === 0) {
-            hubObject.forEach((hub:IHUb) =>{
+            hubObject.forEach((hub:IHub) =>{
                 hubsArray.push(hub);
             })  
         }  
 
         //Add all restaurants to a single array, and sort it by LU, MU, HU
-        hubsArray.forEach((hub:IHUb)=>{
+        hubsArray.forEach((hub:IHub)=>{
             hub.restaurants.forEach((el:IUtilizationData)=>{
                 if(el.utilizationType === 'LU'){
                     luArray.unshift(el);

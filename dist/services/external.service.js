@@ -16,17 +16,20 @@ exports.getAllRestaurantsRatings = exports.getAllRestaurantsMenu = exports.getAl
 const axios_1 = __importDefault(require("axios"));
 const fs_1 = __importDefault(require("fs"));
 const util_1 = require("util");
+const config_1 = __importDefault(require("../config"));
 const hubDataFilePath = 'jsons/hub-data.json';
 const ratingsDataFilePath = 'jsons/ratings-data.json';
 const readFileAsync = (0, util_1.promisify)(fs_1.default.readFile);
 function getAllHubsByCustomerLatLong(coordinates) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const data = yield readFileAsync(hubDataFilePath, 'utf8');
-            const jsonData = JSON.parse(data);
-            return jsonData;
-            // const res = await axios.get("hub-route/" + coordinates);
-            // return res;
+            // const data = await readFileAsync(hubDataFilePath, 'utf8');
+            // const jsonData = JSON.parse(data);
+            // return jsonData;
+            // config.RIDER_HUB_URL
+            const res = yield axios_1.default.get('http://localhost:5000' + `/hub/get-hubs-for-customer/longitude/${coordinates.longitude}/latitude/${coordinates.latitude}`);
+            // console.log('res is ', res.data);
+            return res.data;
         }
         catch (error) {
             throw new Error("Error getting hubs from Hubs server.");
@@ -34,10 +37,11 @@ function getAllHubsByCustomerLatLong(coordinates) {
     });
 }
 exports.getAllHubsByCustomerLatLong = getAllHubsByCustomerLatLong;
-function getAllRestaurantsMenu(restaurantDatas) {
+// export async function getAllRestaurantsMenu (restaurantDatas: IUtilizationData[]) {
+function getAllRestaurantsMenu(ids) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const res = yield axios_1.default.post('https://bento-menu-omi5.koyeb.app/menuItem/get-menu-for-recommendation', restaurantDatas);
+            const res = yield axios_1.default.post('https://bento-menu-omi5.koyeb.app/menuItem/get-menu-for-recommendation', { ids });
             return res.data;
         }
         catch (error) {
@@ -47,14 +51,15 @@ function getAllRestaurantsMenu(restaurantDatas) {
     });
 }
 exports.getAllRestaurantsMenu = getAllRestaurantsMenu;
-function getAllRestaurantsRatings(restaurantDatas) {
+// export async function getAllRestaurantsRatings (restaurantDatas: IUtilizationData[]) {
+function getAllRestaurantsRatings(ids) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const data = yield readFileAsync(ratingsDataFilePath, 'utf8');
-            const jsonData = JSON.parse(data);
-            return jsonData;
-            // const res = await axios.post('review route', restaurantDatas);
-            // return res.data;
+            // const data = await readFileAsync(ratingsDataFilePath, 'utf8');
+            // const jsonData = JSON.parse(data);
+            // return jsonData;
+            const res = yield axios_1.default.post(config_1.default.SKELETON_URL + '/restaurants/search/bulk/rating', { ids });
+            return res.data;
         }
         catch (error) {
             console.log(error);

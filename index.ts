@@ -5,7 +5,7 @@ import mongoose from 'mongoose';
 import recommendationRoute from './routers/recommendation.route';
 import hubsRoute from './routers/hubs.router'
 import bodyParser from 'body-parser';
-const port = 5000;
+const port = 5001;
 
 const app = express();
 app.use(cors({exposedHeaders: ['Authorization']}));

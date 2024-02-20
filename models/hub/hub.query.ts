@@ -1,5 +1,5 @@
 
-import {IHUb} from '../../interfaces/hub.interface';
+import {IHub} from '../../interfaces/hub.interface';
 
 
 const sortByHubIncludeLu = async(hubObject: any)=>{

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { ICustomer } from "../interfaces/customer.interface";
 import { getAllHubsByCustomerLatLong, getAllRestaurantsMenu, getAllRestaurantsRatings } from "../services/external.service"
-import { IHUb } from "../interfaces/hub.interface";
+import { IHub } from "../interfaces/hub.interface";
 import { IUtilizationData } from "../interfaces/utilizationData.interface";
 import { IRestaurantMenu } from "../interfaces/restaurantMenu.interface";
 import { IRestaurantRating } from "../interfaces/restaurantRating.interface";
@@ -11,23 +11,35 @@ interface RestaurantTags {
     tag: { [key: string] : number };
 }
 
+interface IResponse {
+    restaurantId: number;
+    name: string;
+    rating: number;
+}
+
 export const getRestaurantsForMarketplace = async(req: Request, res: Response)=>{
     try {
         const customerObject:ICustomer = {...req.body}    //customer data
 
-        const hubs:IHUb[] = await getAllHubsByCustomerLatLong(customerObject.currentLatLong);
+        const hubs:IHub[] = await getAllHubsByCustomerLatLong(customerObject.currentLatLong);
+        // console.log('hubs are: ', hubs);
 
         //get all sorted restaurants
         const restaurants: IUtilizationData[] | undefined = getSortedRestaurantsFromHubs(hubs);
-        
+        console.log('All restaurants are: ', restaurants);
         let allRestaurantsMenus: IRestaurantMenu[] | undefined;
         let allRestaurantsRatings: IRestaurantRating[] | undefined;
-
-        //get menus and ratings for the restaurants
+        let ids:number[] = []
         if (restaurants) {
-            allRestaurantsMenus = await getAllRestaurantsMenu(restaurants); 
-            allRestaurantsRatings = await getAllRestaurantsRatings(restaurants);
+            ids = restaurants?.map(item => item.restaurantId);
         }
+        //get menus and ratings for the restaurants
+        if (ids) {
+            allRestaurantsMenus = await getAllRestaurantsMenu(ids); 
+            allRestaurantsRatings = await getAllRestaurantsRatings(ids);    //Currently all ratings are 0
+        }
+        // console.log('Restaurant ratings are: ', allRestaurantsRatings);
+        // console.log('Restaurant menu are: ', allRestaurantsMenus);
         
         let customerPreference: string[] = [] 
         if (customerObject.customerPreference.tastyTags.length > 3) { 
@@ -39,6 +51,8 @@ export const getRestaurantsForMarketplace = async(req: Request, res: Response)=>
         } else {
             customerPreference = [...customerObject.customerPreference.tastyTags];
         }
+
+        console.log("Customer preference is: ", customerPreference);
         
         let finalSortedRestaurants: IUtilizationData[] = []
         //For sorted restaurant and menu and rating
@@ -46,9 +60,18 @@ export const getRestaurantsForMarketplace = async(req: Request, res: Response)=>
             finalSortedRestaurants = sortRestaurantsByPreferenceAndRatings(restaurants, allRestaurantsMenus, allRestaurantsRatings,customerPreference) 
         }
 
-        res.status(200).send(finalSortedRestaurants);
-        // res.status(200).send(allRestaurantsMenus);
+        const responseData: IResponse[] = finalSortedRestaurants.map(item => {
+            return {
+                restaurantId: item.restaurantId,
+                name: item.restaurantName,
+                rating: item.rating
+            }
+        })
+
+        res.status(200).send(responseData);
+        // // res.status(200).send(allRestaurantsMenus);
         
+        // res.status(200).send(hubs);
     } catch (error) {
         console.log(error);
     }
@@ -61,8 +84,8 @@ const sortRestaurantsByPreferenceAndRatings = (restaurantsData:IUtilizationData[
    let HuArray:IUtilizationData[] = [];
 
    restaurantsData.forEach(restaurant => {
-    if (restaurant.utilizationType === 'LU') LuArray.push(restaurant);
-    else if(restaurant.utilizationType === 'MU') MuArray.push(restaurant);
+    if (restaurant.level === 'LU') LuArray.push(restaurant);
+    else if(restaurant.level === 'MU') MuArray.push(restaurant);
     else HuArray.push(restaurant);
    })
 
@@ -100,8 +123,7 @@ const sortRestaurantsByPreferenceAndRatings = (restaurantsData:IUtilizationData[
             tagsObj = {};
         }
     });
-    // console.log(`Sorted Tags for ${restaurant.restaurantId} is: `, sortedTagsObj)
-    console.log(`Restaurant with Tags is `, restaurantsWithTagArr);
+    // console.log(`Restaurant with Tags is `, restaurantsWithTagArr);
    })
 
    LuArray = divideSortAndMergeArr(LuArray, restaurantsWithTagArr, customerTags, restaurantRatings);
@@ -179,15 +201,15 @@ const sorterHelperByRatings = (resArr:IUtilizationData[], ratingMap: any) => {
 }
 
 
-const getSortedRestaurantsFromHubs = (hubObject: IHUb[])=>{
+const getSortedRestaurantsFromHubs = (hubObject: IHub[])=>{
     try {
-        const hubsArray:IHUb[] = [];
+        const hubsArray:IHub[] = [];
         const LuArray:IUtilizationData[] = [];
         const MuArray:IUtilizationData[] = [];
         const HuArray:IUtilizationData[] = [];
     
         //insert all LU hubs
-        hubObject.forEach((hub:IHUb) =>{
+        hubObject.forEach((hub:IHub) =>{
             if(hub.status === 'LU'){
                 hubsArray.push(hub);
             }
@@ -195,7 +217,7 @@ const getSortedRestaurantsFromHubs = (hubObject: IHUb[])=>{
 
         //insert all MU hubs, as no LU hubs present
         if (hubsArray.length === 0) {
-            hubObject.forEach((hub:IHUb) =>{
+            hubObject.forEach((hub:IHub) =>{
                 if(hub.status === 'MU'){
                     hubsArray.push(hub);
                 }
@@ -204,22 +226,22 @@ const getSortedRestaurantsFromHubs = (hubObject: IHUb[])=>{
 
         //insert all HU hubs, as no LU or MU hubs present
         if (hubsArray.length === 0) {
-            hubObject.forEach((hub:IHUb) =>{
+            hubObject.forEach((hub:IHub) =>{
                 hubsArray.push(hub);
             })  
         }  
 
         //Add all restaurants to a single array, and sort it by LU, MU, HU
-        hubsArray.forEach((hub:IHUb)=>{
-            hub.restaurants.forEach((el:IUtilizationData)=>{
-                if(el.utilizationType === 'LU'){
-                    LuArray.unshift(el);
+        hubsArray.forEach((hub:IHub)=>{
+            hub.restaurants.forEach((restaurant:IUtilizationData)=>{
+                if(restaurant.level === 'LU'){
+                    LuArray.unshift(restaurant);
                  }
-                 else if(el.utilizationType === 'MU'){
-                    MuArray.push(el);
+                 else if(restaurant.level === 'MU'){
+                    MuArray.push(restaurant);
                  }
                  else{
-                    HuArray.push(el);
+                    HuArray.push(restaurant);
                  }
             })
         })

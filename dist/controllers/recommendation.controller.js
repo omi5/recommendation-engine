@@ -15,15 +15,23 @@ const getRestaurantsForMarketplace = (req, res) => __awaiter(void 0, void 0, voi
     try {
         const customerObject = Object.assign({}, req.body); //customer data
         const hubs = yield (0, external_service_1.getAllHubsByCustomerLatLong)(customerObject.currentLatLong);
+        // console.log('hubs are: ', hubs);
         //get all sorted restaurants
         const restaurants = getSortedRestaurantsFromHubs(hubs);
+        console.log('All restaurants are: ', restaurants);
         let allRestaurantsMenus;
         let allRestaurantsRatings;
-        //get menus and ratings for the restaurants
+        let ids = [];
         if (restaurants) {
-            allRestaurantsMenus = yield (0, external_service_1.getAllRestaurantsMenu)(restaurants);
-            allRestaurantsRatings = yield (0, external_service_1.getAllRestaurantsRatings)(restaurants);
+            ids = restaurants === null || restaurants === void 0 ? void 0 : restaurants.map(item => item.restaurantId);
         }
+        //get menus and ratings for the restaurants
+        if (ids) {
+            allRestaurantsMenus = yield (0, external_service_1.getAllRestaurantsMenu)(ids);
+            allRestaurantsRatings = yield (0, external_service_1.getAllRestaurantsRatings)(ids); //Currently all ratings are 0
+        }
+        // console.log('Restaurant ratings are: ', allRestaurantsRatings);
+        // console.log('Restaurant menu are: ', allRestaurantsMenus);
         let customerPreference = [];
         if (customerObject.customerPreference.tastyTags.length > 3) {
             for (let i = 0; i < customerObject.customerPreference.tastyTags.length; i++) {
@@ -35,13 +43,22 @@ const getRestaurantsForMarketplace = (req, res) => __awaiter(void 0, void 0, voi
         else {
             customerPreference = [...customerObject.customerPreference.tastyTags];
         }
+        console.log("Customer preference is: ", customerPreference);
         let finalSortedRestaurants = [];
         //For sorted restaurant and menu and rating
         if (restaurants && allRestaurantsMenus && allRestaurantsRatings) {
             finalSortedRestaurants = sortRestaurantsByPreferenceAndRatings(restaurants, allRestaurantsMenus, allRestaurantsRatings, customerPreference);
         }
-        res.status(200).send(finalSortedRestaurants);
-        // res.status(200).send(allRestaurantsMenus);
+        const responseData = finalSortedRestaurants.map(item => {
+            return {
+                restaurantId: item.restaurantId,
+                name: item.restaurantName,
+                rating: item.rating
+            };
+        });
+        res.status(200).send(responseData);
+        // // res.status(200).send(allRestaurantsMenus);
+        // res.status(200).send(hubs);
     }
     catch (error) {
         console.log(error);
@@ -53,9 +70,9 @@ const sortRestaurantsByPreferenceAndRatings = (restaurantsData, restaurantMenus,
     let MuArray = [];
     let HuArray = [];
     restaurantsData.forEach(restaurant => {
-        if (restaurant.utilizationType === 'LU')
+        if (restaurant.level === 'LU')
             LuArray.push(restaurant);
-        else if (restaurant.utilizationType === 'MU')
+        else if (restaurant.level === 'MU')
             MuArray.push(restaurant);
         else
             HuArray.push(restaurant);
@@ -184,15 +201,15 @@ const getSortedRestaurantsFromHubs = (hubObject) => {
         }
         //Add all restaurants to a single array, and sort it by LU, MU, HU
         hubsArray.forEach((hub) => {
-            hub.restaurants.forEach((el) => {
-                if (el.utilizationType === 'LU') {
-                    LuArray.unshift(el);
+            hub.restaurants.forEach((restaurant) => {
+                if (restaurant.level === 'LU') {
+                    LuArray.unshift(restaurant);
                 }
-                else if (el.utilizationType === 'MU') {
-                    MuArray.push(el);
+                else if (restaurant.level === 'MU') {
+                    MuArray.push(restaurant);
                 }
                 else {
-                    HuArray.push(el);
+                    HuArray.push(restaurant);
                 }
             });
         });

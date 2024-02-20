@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose'
-import { IHUb } from '../../interfaces/hub.interface';
+import { IHub } from '../../interfaces/hub.interface';
 
 
 const HubSchema: Schema = new Schema({
@@ -12,4 +12,4 @@ const HubSchema: Schema = new Schema({
 });
 
 
-export const HubModel = mongoose.model<IHUb>('Hub', HubSchema);
+export const HubModel = mongoose.model<IHub>('Hub', HubSchema);
