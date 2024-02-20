@@ -111,8 +111,7 @@ const sortRestaurantsByPreferenceAndRatings = (restaurantsData, restaurantMenus,
                 tagsObj = {};
             }
         });
-        // console.log(`Sorted Tags for ${restaurant.restaurantId} is: `, sortedTagsObj)
-        console.log(`Restaurant with Tags is `, restaurantsWithTagArr);
+        // console.log(`Restaurant with Tags is `, restaurantsWithTagArr);
     });
     LuArray = divideSortAndMergeArr(LuArray, restaurantsWithTagArr, customerTags, restaurantRatings);
     MuArray = divideSortAndMergeArr(MuArray, restaurantsWithTagArr, customerTags, restaurantRatings);

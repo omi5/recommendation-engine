@@ -27,7 +27,7 @@ function getAllHubsByCustomerLatLong(coordinates) {
             // const jsonData = JSON.parse(data);
             // return jsonData;
             // config.RIDER_HUB_URL
-            const res = yield axios_1.default.get('http://localhost:5000' + `/hub/get-hubs-for-customer/longitude/${coordinates.longitude}/latitude/${coordinates.latitude}`);
+            const res = yield axios_1.default.get(config_1.default.RIDER_HUB_URL + `/hub/get-hubs-for-customer/longitude/${coordinates.longitude}/latitude/${coordinates.latitude}`);
             // console.log('res is ', res.data);
             return res.data;
         }
