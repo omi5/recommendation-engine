@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-const config = {
+export const config = {
   DB_PASS: process.env.DB_PASS,
   DB_USER: process.env.DB_USER,
 
