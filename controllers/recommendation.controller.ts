@@ -22,11 +22,9 @@ export const getRestaurantsForMarketplace = async(req: Request, res: Response)=>
         const customerObject:ICustomer = {...req.body}    //customer data
 
         const hubs:IHub[] = await getAllHubsByCustomerLatLong(customerObject.currentLatLong);
-        // console.log('hubs are: ', hubs);
 
         //get all sorted restaurants
         const restaurants: IUtilizationData[] | undefined = getSortedRestaurantsFromHubs(hubs);
-        // console.log('All restaurants are: ', restaurants);
         let allRestaurantsMenus: IRestaurantMenu[] | undefined;
         let allRestaurantsRatings: IRestaurantRating[] | undefined;
         let ids:number[] = []
@@ -38,7 +36,7 @@ export const getRestaurantsForMarketplace = async(req: Request, res: Response)=>
             allRestaurantsMenus = await getAllRestaurantsMenu(ids); 
             allRestaurantsRatings = await getAllRestaurantsRatings(ids);    //Currently all ratings are 0
         }
-        console.log('Restaurant ratings are: ', allRestaurantsRatings);
+        // console.log('Restaurant ratings are: ', allRestaurantsRatings);
         // console.log('Restaurant menu are: ', allRestaurantsMenus);
         
         let customerPreference: string[] = [] 
@@ -51,8 +49,6 @@ export const getRestaurantsForMarketplace = async(req: Request, res: Response)=>
         } else {
             customerPreference = [...customerObject.customerPreference.tastyTags];
         }
-
-        // console.log("Customer preference is: ", customerPreference);
         
         let finalSortedRestaurants: IUtilizationData[] = []
         //For sorted restaurant and menu and rating
@@ -72,8 +68,6 @@ export const getRestaurantsForMarketplace = async(req: Request, res: Response)=>
 
         res.status(200).send(responseData);
         // // res.status(200).send(allRestaurantsMenus);
-        
-        // res.status(200).send(hubs);
     } catch (error) {
         console.log(error);
     }
@@ -125,7 +119,6 @@ const sortRestaurantsByPreferenceAndRatings = (restaurantsData:IUtilizationData[
             tagsObj = {};
         }
     });
-    // console.log(`Restaurant with Tags is `, restaurantsWithTagArr);
    })
 
    LuArray = divideSortAndMergeArr(LuArray, restaurantsWithTagArr, customerTags, restaurantRatings);
