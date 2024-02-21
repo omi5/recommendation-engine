@@ -27,6 +27,7 @@ function getAllHubsByCustomerLatLong(coordinates) {
             // const jsonData = JSON.parse(data);
             // return jsonData;
             // config.RIDER_HUB_URL
+            // 'http://localhost:5000'
             const res = yield axios_1.default.get(config_1.default.RIDER_HUB_URL + `/hub/get-hubs-for-customer/longitude/${coordinates.longitude}/latitude/${coordinates.latitude}`);
             // console.log('res is ', res.data);
             return res.data;
@@ -58,6 +59,7 @@ function getAllRestaurantsRatings(ids) {
             // const data = await readFileAsync(ratingsDataFilePath, 'utf8');
             // const jsonData = JSON.parse(data);
             // return jsonData;
+            // config.SKELETON_URL
             const res = yield axios_1.default.post(config_1.default.SKELETON_URL + '/restaurants/search/bulk/rating', { ids });
             return res.data;
         }

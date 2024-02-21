@@ -16,6 +16,7 @@ export async function getAllHubsByCustomerLatLong (coordinates: ILongLat) {
     // const jsonData = JSON.parse(data);
     // return jsonData;
     // config.RIDER_HUB_URL
+    // 'http://localhost:5000'
     const res = await axios.get(config.RIDER_HUB_URL + `/hub/get-hubs-for-customer/longitude/${coordinates.longitude}/latitude/${coordinates.latitude}`);
     // console.log('res is ', res.data);
     return res.data as IHub[];
@@ -41,6 +42,7 @@ export async function getAllRestaurantsRatings (ids: number[]) {
     // const data = await readFileAsync(ratingsDataFilePath, 'utf8');
     // const jsonData = JSON.parse(data);
     // return jsonData;
+    // config.SKELETON_URL
     const res = await axios.post(config.SKELETON_URL + '/restaurants/search/bulk/rating', {ids});
     return res.data;
   } catch (error) {

@@ -26,7 +26,7 @@ export const getRestaurantsForMarketplace = async(req: Request, res: Response)=>
 
         //get all sorted restaurants
         const restaurants: IUtilizationData[] | undefined = getSortedRestaurantsFromHubs(hubs);
-        console.log('All restaurants are: ', restaurants);
+        // console.log('All restaurants are: ', restaurants);
         let allRestaurantsMenus: IRestaurantMenu[] | undefined;
         let allRestaurantsRatings: IRestaurantRating[] | undefined;
         let ids:number[] = []
@@ -38,7 +38,7 @@ export const getRestaurantsForMarketplace = async(req: Request, res: Response)=>
             allRestaurantsMenus = await getAllRestaurantsMenu(ids); 
             allRestaurantsRatings = await getAllRestaurantsRatings(ids);    //Currently all ratings are 0
         }
-        // console.log('Restaurant ratings are: ', allRestaurantsRatings);
+        console.log('Restaurant ratings are: ', allRestaurantsRatings);
         // console.log('Restaurant menu are: ', allRestaurantsMenus);
         
         let customerPreference: string[] = [] 
@@ -52,13 +52,15 @@ export const getRestaurantsForMarketplace = async(req: Request, res: Response)=>
             customerPreference = [...customerObject.customerPreference.tastyTags];
         }
 
-        console.log("Customer preference is: ", customerPreference);
+        // console.log("Customer preference is: ", customerPreference);
         
         let finalSortedRestaurants: IUtilizationData[] = []
         //For sorted restaurant and menu and rating
         if (restaurants && allRestaurantsMenus && allRestaurantsRatings) {
             finalSortedRestaurants = sortRestaurantsByPreferenceAndRatings(restaurants, allRestaurantsMenus, allRestaurantsRatings,customerPreference) 
         }
+
+        console.log('Sorted restaurants are: ', restaurants);
 
         const responseData: IResponse[] = finalSortedRestaurants.map(item => {
             return {
