@@ -3,7 +3,7 @@ import { ICustomerPreference } from "./CustomerPreference.interface";
 import { ILongLat } from "./longLat.interface";
 export interface ICustomer {
     _id: string; //needed
-    name: string; //needed
+    name?: string; //needed
     email?: string;
     dob?: Date;
     age?: number;
