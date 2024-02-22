@@ -56,7 +56,7 @@ export const getRestaurantsForMarketplace = async(req: Request, res: Response)=>
             finalSortedRestaurants = sortRestaurantsByPreferenceAndRatings(restaurants, allRestaurantsMenus, allRestaurantsRatings,customerPreference) 
         }
 
-        console.log('Sorted restaurants are: ', restaurants);
+        // console.log('Sorted restaurants are: ', restaurants);
 
         const responseData: IResponse[] = finalSortedRestaurants.map(item => {
             return {
@@ -65,6 +65,7 @@ export const getRestaurantsForMarketplace = async(req: Request, res: Response)=>
                 rating: item.rating
             }
         })
+        console.log('Response data are: ', responseData);
 
         res.status(200).send(responseData);
         // // res.status(200).send(allRestaurantsMenus);

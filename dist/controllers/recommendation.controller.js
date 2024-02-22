@@ -15,10 +15,8 @@ const getRestaurantsForMarketplace = (req, res) => __awaiter(void 0, void 0, voi
     try {
         const customerObject = Object.assign({}, req.body); //customer data
         const hubs = yield (0, external_service_1.getAllHubsByCustomerLatLong)(customerObject.currentLatLong);
-        // console.log('hubs are: ', hubs);
         //get all sorted restaurants
         const restaurants = getSortedRestaurantsFromHubs(hubs);
-        // console.log('All restaurants are: ', restaurants);
         let allRestaurantsMenus;
         let allRestaurantsRatings;
         let ids = [];
@@ -30,7 +28,7 @@ const getRestaurantsForMarketplace = (req, res) => __awaiter(void 0, void 0, voi
             allRestaurantsMenus = yield (0, external_service_1.getAllRestaurantsMenu)(ids);
             allRestaurantsRatings = yield (0, external_service_1.getAllRestaurantsRatings)(ids); //Currently all ratings are 0
         }
-        console.log('Restaurant ratings are: ', allRestaurantsRatings);
+        // console.log('Restaurant ratings are: ', allRestaurantsRatings);
         // console.log('Restaurant menu are: ', allRestaurantsMenus);
         let customerPreference = [];
         if (customerObject.customerPreference.tastyTags.length > 3) {
@@ -43,13 +41,12 @@ const getRestaurantsForMarketplace = (req, res) => __awaiter(void 0, void 0, voi
         else {
             customerPreference = [...customerObject.customerPreference.tastyTags];
         }
-        // console.log("Customer preference is: ", customerPreference);
         let finalSortedRestaurants = [];
         //For sorted restaurant and menu and rating
         if (restaurants && allRestaurantsMenus && allRestaurantsRatings) {
             finalSortedRestaurants = sortRestaurantsByPreferenceAndRatings(restaurants, allRestaurantsMenus, allRestaurantsRatings, customerPreference);
         }
-        console.log('Sorted restaurants are: ', restaurants);
+        // console.log('Sorted restaurants are: ', restaurants);
         const responseData = finalSortedRestaurants.map(item => {
             return {
                 restaurantId: item.restaurantId,
@@ -57,9 +54,9 @@ const getRestaurantsForMarketplace = (req, res) => __awaiter(void 0, void 0, voi
                 rating: item.rating
             };
         });
+        console.log('Response data are: ', responseData);
         res.status(200).send(responseData);
         // // res.status(200).send(allRestaurantsMenus);
-        // res.status(200).send(hubs);
     }
     catch (error) {
         console.log(error);
@@ -112,7 +109,6 @@ const sortRestaurantsByPreferenceAndRatings = (restaurantsData, restaurantMenus,
                 tagsObj = {};
             }
         });
-        // console.log(`Restaurant with Tags is `, restaurantsWithTagArr);
     });
     LuArray = divideSortAndMergeArr(LuArray, restaurantsWithTagArr, customerTags, restaurantRatings);
     MuArray = divideSortAndMergeArr(MuArray, restaurantsWithTagArr, customerTags, restaurantRatings);
