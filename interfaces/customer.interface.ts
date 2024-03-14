@@ -1,4 +1,4 @@
-import { ICustomerPreference } from "./customerPreference.interface";
+import { ICustomerPreference } from "./CustomerPreference.interface";
 import { ILongLat } from "./longLat.interface";
 
 export interface ICustomer {
