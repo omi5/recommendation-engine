@@ -1,9 +1,9 @@
-
-import { ICustomerPreference } from "./CustomerPreference.interface";
+import { ICustomerPreference } from "./customerPreference.interface";
 import { ILongLat } from "./longLat.interface";
+
 export interface ICustomer {
-    _id: string; //needed
-    name?: string; //needed
+    _id: string; 
+    name?: string;
     email?: string;
     dob?: Date;
     age?: number;
@@ -11,10 +11,10 @@ export interface ICustomer {
     phoneNumber?: string;
     password?: string;
     address?: string;
-    currentLatLong: ILongLat; //needed
+    currentLatLong: ILongLat;
     doorwayLatLong?: ILongLat;
     uprn?: string;
     allOrderIdList?: string[];
-    customerPreference: ICustomerPreference; // //needed //Tasty Tag Enums from Menu and category
+    customerPreference: ICustomerPreference; 
     loyaltyPoints?: number;
   } 
