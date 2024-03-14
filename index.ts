@@ -1,8 +1,7 @@
-//for index.ts
 import express from 'express';
 import cors from 'cors';
 import { config } from './config';
-import recommendationRoute from './routers/recommendation.route';
+import recommendationRoute from './routers/recommendation.router';
 import bodyParser from 'body-parser';
 
 const app = express();
