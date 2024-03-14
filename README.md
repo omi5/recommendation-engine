@@ -29,6 +29,9 @@ based on the following factors
     └── recommenderUtil.ts
 └── config.ts
 └── index.ts
+└── package.json
+└── README.md
+
 ```
 
 ### Deployed Backend
