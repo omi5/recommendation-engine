@@ -42,8 +42,9 @@ on the basis of following factors:
 
 1. Clone the repository: `git clone https://github.com/omi5/recommendation-engine.git`
 2. Install dependencies: `npm install`
-3. Start the development server: `npm run dev`
-4. Make POST API Call: `localhost:5000/get-all-restaurants/get-all-restaurants`
+3. Create a `.env` based on the given `.env.example`
+4. Start the development server: `npm run dev`
+5. Make POST API Call: `localhost:5000/get-all-restaurants/get-all-restaurants`
 
 body:
 
