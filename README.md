@@ -2,8 +2,8 @@
 
 ### Main Features
 
-Based on the customer location and taste profiles/preferences, returns a list of restaurants
-based on the following factors
+Based on the customer location and taste profiles/preferences, returns a sorted list of restaurants
+on the basis of following factors:
 
 - Restaurant proximity
 - Current utilization rate
@@ -38,13 +38,12 @@ based on the following factors
 
 `https://bento-recommender.onrender.com`
 
-### How to run the app on Local Machine
+### How to Run the App Locally
 
-`npm i`
-
-`npm run dev`
-
-Make POST API Call: `https://bento-recommender.onrender.com/get-all-restaurants`
+1. Clone the repository: `git clone https://github.com/omi5/recommendation-engine.git`
+2. Install dependencies: `npm install`
+3. Start the development server: `npm run dev`
+4. Make POST API Call: `localhost:5000/get-all-restaurants/get-all-restaurants`
 
 body:
 
